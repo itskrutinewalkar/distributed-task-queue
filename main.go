@@ -6,6 +6,8 @@ import (
 
 	"github.com/go-redis/redis/v8"
 	"github.com/krutinewalkar/distributed-task-queue/db"
+	"github.com/krutinewalkar/distributed-task-queue/queue"
+	"github.com/krutinewalkar/distributed-task-queue/worker"
 )
 
 func main() {
@@ -23,5 +25,13 @@ func main() {
 	}
 	log.Println("Redis connected")
 
-	log.Println("All systems go")
+	// Test Enqueue
+	job, err := queue.Enqueue(database, rdb, "default", "Hello, World!")
+	if err != nil {
+		log.Fatal("Failed to enqueue job:", err)
+	}
+	log.Printf("Job enqueued: %v", job)
+
+	// Start worker
+	worker.StartWorker(database, rdb, "default")
 }
