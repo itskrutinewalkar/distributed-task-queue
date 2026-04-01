@@ -2,6 +2,50 @@
 
 A job queue system built in Go that spawns workers, handles retries, and tracks job status. Built with Redis for queueing and PostgreSQL for persistent job storage.
 
+# Neccessity
+
+Big companies like Uber, Netflix, and Amazon don’t just handle one task at a time.
+
+They handle:
+--millions of users
+--millions of requests
+--thousands of background operations
+
+Example: **Uber**
+
+When you book a ride, following steps should be executed:
+
+--Match driver
+--Calculate price
+--Notify driver
+--Track ride
+--Send receipt
+
+--**Some tasks must be instant**
+--**Others can happen in background**
+
+Example:
+
+Sending email receipt → can be delayed
+Fraud detection → runs in background
+
+Without a queue: App becomes slow or crashes
+
+👉 The problem is:
+
+You cannot do everything instantly, in one place, at the same time.
+
+My distributed task queue:
+
+✔ Stores tasks safely
+✔ Processes them in background
+✔ Retries failed ones
+✔ Tracks status
+✔ Scales with demand
+
+## Note
+*This project is built simply out of interest and to understand how these systems work under the hood.*
+
 ## Tech Stack
 
 - **Go** — core application
@@ -145,11 +189,3 @@ docker exec -it postgres psql -U taskqueue -d taskqueue -c "SELECT id, status, a
 ```bash
 docker exec -it redis redis-cli LRANGE queue:default 0 -1
 ```
-
-## Roadmap
-
-- [ ] HTTP API — `POST /jobs` and `GET /jobs/:id`
-- [ ] Multiple named queues
-- [ ] Delayed job scheduling
-- [ ] Worker concurrency (multiple goroutines)
-- [ ] Dead letter queue for permanently failed jobs
