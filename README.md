@@ -7,22 +7,22 @@ A job queue system built in Go that spawns workers, handles retries, and tracks 
 Big companies like Uber, Netflix, and Amazon don’t just handle one task at a time.
 
 They handle:
--millions of users
--millions of requests
--thousands of background operations
+- millions of users
+- millions of requests
+- thousands of background operations
 
 Example: **Uber**
 
 When you book a ride, following steps should be executed:
 
--Match driver
--Calculate price
--Notify driver
--Track ride
--Send receipt
+- Match driver
+- Calculate price
+- Notify driver
+- Track ride
+- Send receipt
 
--**Some tasks must be instant**
--**Others can happen in background**
+- **Some tasks must be instant**
+- **Others can happen in background**
 
 Example:
 
