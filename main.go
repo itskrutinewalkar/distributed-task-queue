@@ -12,11 +12,11 @@ import (
 )
 
 func main() {
-	//Connect to Postgres
+	// Connect to Postgres
 	database := db.Connect("postgres://taskqueue:password@localhost:5432/taskqueue?sslmode=disable")
 	defer database.Close()
 
-	//Connect to Redis
+	// Connect to Redis
 	rdb := redis.NewClient(&redis.Options{
 		Addr: "localhost:6379",
 	})
@@ -27,13 +27,18 @@ func main() {
 	}
 	log.Println("Redis connected")
 
-	//Test routers
+	// Start worker in background
+	go worker.StartWorker(database, rdb, "1234567890")
+
+	// Setup routes
 	router := gin.Default()
-	router.POST("/enqueue", func(c *gin.Context) {
+	router.POST("/jobs", func(c *gin.Context) {
 		api.HandleEnqueue(c, database, rdb)
 	})
-	router.Run("localhost:8082")
+	router.GET("/jobs/:id", func(c *gin.Context) {
+		api.HandleGetJob(c, database)
+	})
 
-	//Enable worker node
-	worker.StartWorker(database, rdb, "1234567890")
+	log.Println("API running on :8082")
+	router.Run(":8082")
 }
